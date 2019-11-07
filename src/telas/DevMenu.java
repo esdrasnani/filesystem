@@ -21,7 +21,14 @@ public class DevMenu extends javax.swing.JFrame {
     /**
      * Creates new form DevMenu
      */
-    public DevMenu() {
+    String nome;
+    String caminho;
+    String dataCriacao;
+    public DevMenu(String nome, String caminho, String dataCriacao) {
+        this.nome = nome;
+        this.caminho = caminho;
+        this.dataCriacao = dataCriacao;
+        setLocationRelativeTo(null);
         initComponents();
     }
 
@@ -50,16 +57,16 @@ public class DevMenu extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(22, 22, 22)
+                .addGap(149, 149, 149)
                 .addComponent(jButton1)
-                .addContainerGap(309, Short.MAX_VALUE))
+                .addContainerGap(182, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(111, 111, 111)
                 .addComponent(jButton1)
-                .addContainerGap(256, Short.MAX_VALUE))
+                .addContainerGap(156, Short.MAX_VALUE))
         );
 
         pack();
@@ -117,7 +124,7 @@ public class DevMenu extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DevMenu().setVisible(true);
+                //new DevMenu().setVisible(true);
             }
         });
     }

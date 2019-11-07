@@ -5,6 +5,8 @@
  */
 package telas;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -13,9 +15,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.stage.FileChooser;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.SwingWorker;
+import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -28,6 +32,7 @@ public class Inicio extends javax.swing.JFrame {
      * Creates new form Inicio
      */
     public Inicio() {
+        setLocationRelativeTo(null);
         initComponents();
     }
 
@@ -74,7 +79,7 @@ public class Inicio extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
+                
         JFileChooser fileChooser = new JFileChooser();
         
         fileChooser.setDialogTitle("Selecione o local do Arquivo");
@@ -90,7 +95,6 @@ public class Inicio extends javax.swing.JFrame {
             String caminho = file.getAbsolutePath();
             String dataCriacao = "";
             String header = "";
-            //String headerComHash = "";
             
             try {
                 
@@ -106,11 +110,6 @@ public class Inicio extends javax.swing.JFrame {
                 
                 dev.close();
                 
-                // Reescrever com Hash
-                // # = Separador, $ = Final do cabeçalho                
-                //headerComHash = gerarHashArquivo(caminho) + "###"
-                //        + header;
-                
                 dev = new FileOutputStream(file + ".dev", false);
                 
                 dev.write(header.getBytes());
@@ -118,12 +117,12 @@ public class Inicio extends javax.swing.JFrame {
                 dev.close();
                 
             } catch (FileNotFoundException ex) {
-                //Logger.getLogger(WinDub.class.getName()).log(Level.SEVERE, null, ex);
+                
             } catch (IOException ex) {
-                //Logger.getLogger(WinDub.class.getName()).log(Level.SEVERE, null, ex);
+               
             }
             
-            DevMenu devmenu = new DevMenu();
+            DevMenu devmenu = new DevMenu(file.getPath() + ".dev", header, dataCriacao);
             devmenu.setVisible(true);
             
             
@@ -157,7 +156,7 @@ public class Inicio extends javax.swing.JFrame {
             w.execute();
             */
         }
-
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -171,10 +170,12 @@ public class Inicio extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+               /* if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
+                */
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             }
         } catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(Inicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -186,7 +187,7 @@ public class Inicio extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Inicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+           
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -194,6 +195,7 @@ public class Inicio extends javax.swing.JFrame {
             }
         });
     }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
