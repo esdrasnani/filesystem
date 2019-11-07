@@ -7,9 +7,19 @@ package telas;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -21,15 +31,31 @@ public class DevMenu extends javax.swing.JFrame {
     /**
      * Creates new form DevMenu
      */
-    String nome;
-    String caminho;
-    String dataCriacao;
-    public DevMenu(String nome, String caminho, String dataCriacao) {
+    public static String nome;
+    public static String caminho;
+    public static String header;
+    public static byte[] conteudo;
+    public static String dataCriacao;
+    public static DefaultListModel modelo = new DefaultListModel();
+    
+    /*
+    public static String filename = "";
+    public static String header = "";
+    public static byte [] conteudoArquivos;
+    public static String arquivoComHash = "";
+    public static String dataCriacao = "";
+    public static List<Arquivo> arquivos;
+    */
+    public DevMenu(String nome, String caminho, String header, String dataCriacao, byte[] conteudo, int novo) {
         this.nome = nome;
         this.caminho = caminho;
+        this.header = header;
         this.dataCriacao = dataCriacao;
-        setLocationRelativeTo(null);
+        this.conteudo = conteudo;
+        setLocationRelativeTo(null);        
         initComponents();
+        if (novo == 0)
+            jList1.setModel(montarArvore());
     }
 
     /**
@@ -42,6 +68,9 @@ public class DevMenu extends javax.swing.JFrame {
     private void initComponents() {
 
         jButton1 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<>();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -52,21 +81,39 @@ public class DevMenu extends javax.swing.JFrame {
             }
         });
 
+        jScrollPane1.setViewportView(jList1);
+
+        jButton2.setText("Extrair");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(149, 149, 149)
-                .addComponent(jButton1)
-                .addContainerGap(182, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(119, 119, 119)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(47, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(111, 111, 111)
-                .addComponent(jButton1)
-                .addContainerGap(156, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         pack();
@@ -83,17 +130,100 @@ public class DevMenu extends javax.swing.JFrame {
         if(fileChooser.showSaveDialog(new JFrame()) == JFileChooser.APPROVE_OPTION) {
             
             File file = fileChooser.getSelectedFile();
-            // Using java.io.FileInputStream
-            byte[] bArray = readFileToByteArray(file);
-            //displaying content of byte array
-            System.out.println(bArray.length);  
-            System.out.println(file.getName());
-            System.out.println(file.getPath());
-            System.out.println(file.getAbsoluteFile());
-            System.out.println(file.getAbsolutePath());
+            writebytes(file);
+            modelo.addElement(file.getName());
+            jList1.setModel(modelo);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        String nomeExtrair = jList1.getSelectedValue();
+        System.out.println(nomeExtrair);
+        String extensao = nomeExtrair.substring(nomeExtrair.indexOf(".")+1);
+        String nome = nomeExtrair.substring(0, nomeExtrair.indexOf("."));
+        System.out.println(extensao);
+        JFileChooser fileChooser = new JFileChooser();
+        
+        fileChooser.setDialogTitle("Selecione o local do Arquivo");
+        
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Arquivos " + extensao +" (." + extensao + ")", extensao));
+        fileChooser.setName(nomeExtrair);
+        
+        fileChooser.setSelectedFile(new File(nome));
+        
+        if(fileChooser.showSaveDialog(new JFrame()) == JFileChooser.APPROVE_OPTION) {
+            
+        }
+        
+    }//GEN-LAST:event_jButton2ActionPerformed
+    
+    private byte[] readFileToByteArray(File file) {
+        FileInputStream fis = null;
+        // Creating a byte array using the length of the file
+        // file.length returns long which is cast to int
+        byte[] bArray = new byte[(int) file.length()];
+        try{
+            fis = new FileInputStream(file);
+            fis.read(bArray);
+            fis.close();        
+            
+        }catch(IOException ioExp){
+            ioExp.printStackTrace();
+        }
+        return bArray;
+    }
+    
+    private void writebytes(File file){
+        try{
+            byte[] fileBytes = readFileToByteArray(file);
+            
+            SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+            String data_criacao = fmt.format(new Date());
+            
+            int inicio = conteudo.length;
+            
+            header += "###" + file.getName() + "&&&1&&&" + file.getPath() 
+                   + "&&&" + inicio + "&&&" + fileBytes.length + "&&&" + data_criacao;
+            
+            
+            byte[] newBytes = Arrays.copyOf(conteudo, conteudo.length + fileBytes.length);
+            System.arraycopy(fileBytes, 0, newBytes, conteudo.length, fileBytes.length);
+            
+            conteudo = newBytes;
+            
+            FileOutputStream dev = new FileOutputStream(caminho+".dev");            
+            String newBytesHeader = header + "$$$" + new String(conteudo);
+            dev.write(newBytesHeader.getBytes());
+            System.out.println(newBytesHeader);
+            System.out.println("Arquivo Inserido com Sucesso");
+            dev.close();
+        }
+        catch(Exception e){
+            System.out.println("Exception" + e);
+        }
+    }
+    
+     private DefaultListModel montarArvore() {
+         System.out.println(header);
+        // Ler header
+        List<String> list = Arrays.asList(header.split("###"));
+        
+        list = new ArrayList<String>(list);
+        
+        list.remove(0);
+        
+         System.out.println(list);
+         
+         for(String s : list) {
+            String [] arquivoPart = s.split("&&&");
+            System.out.println(arquivoPart[0]);
+            modelo.addElement(arquivoPart[0]); 
+         }
+         
+         return modelo;
+     }
     /**
      * @param args the command line arguments
      */
@@ -131,21 +261,9 @@ public class DevMenu extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JList<String> jList1;
+    private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 
-    private byte[] readFileToByteArray(File file) {
-        FileInputStream fis = null;
-        // Creating a byte array using the length of the file
-        // file.length returns long which is cast to int
-        byte[] bArray = new byte[(int) file.length()];
-        try{
-            fis = new FileInputStream(file);
-            fis.read(bArray);
-            fis.close();        
-            
-        }catch(IOException ioExp){
-            ioExp.printStackTrace();
-        }
-        return bArray;
-    }
 }

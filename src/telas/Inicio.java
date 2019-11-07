@@ -11,11 +11,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.stage.FileChooser;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.SwingWorker;
@@ -46,6 +46,7 @@ public class Inicio extends javax.swing.JFrame {
     private void initComponents() {
 
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -56,21 +57,32 @@ public class Inicio extends javax.swing.JFrame {
             }
         });
 
+        jButton2.setText("Abrir Arquivo");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(149, 149, 149)
-                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(142, 142, 142))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(59, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(48, 48, 48))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(122, 122, 122)
-                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(146, 146, 146))
+                .addGap(26, 26, 26)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(37, 37, 37))
         );
 
         jButton1.getAccessibleContext().setAccessibleDescription("");
@@ -104,7 +116,7 @@ public class Inicio extends javax.swing.JFrame {
                 
                 dataCriacao = fmt.format(new Date());
                 
-                header = nome + "|" + caminho + "|" + dataCriacao + "$";
+                header = "###" + nome + "&&&" + caminho + "&&&" + dataCriacao;
                 
                 dev.write(header.getBytes());
                 
@@ -122,42 +134,49 @@ public class Inicio extends javax.swing.JFrame {
                
             }
             
-            DevMenu devmenu = new DevMenu(file.getPath() + ".dev", header, dataCriacao);
+            DevMenu devmenu = new DevMenu(file.getPath() + ".dev", caminho, header, dataCriacao, new byte[0], 1);
             devmenu.setVisible(true);
-            
-            
-            
-            /*
-            App app = new App(novoArquivo.getPath() + ".dub", header, headerComHash, dataCriacao, new byte[0]);
-            app.setVisible(true);
-
-            this.setAlwaysOnTop(true);
-
-            SwingWorker w = new SwingWorker() {
-            @Override
-            protected Object doInBackground() throws Exception {
-                for(int i = 50; i > 0; i--) {
-                setOpacity(i * 0.02f);
-                try {
-                        Thread.sleep(20);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(WinDub.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-
-                setVisible(false);
-
-                return 0;
-
-            }
-
-            };
-
-            w.execute();
-            */
         }
         
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        
+        fileChooser.setDialogTitle("Selecione o local do Arquivo");
+        
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Arquivos DEV (.dev)", "dev"));
+        
+        if(fileChooser.showSaveDialog(new JFrame()) == JFileChooser.APPROVE_OPTION) {
+            
+            File file = fileChooser.getSelectedFile(); 
+            
+            String conteudo = "";
+            try {
+                conteudo = new String(Files.readAllBytes(fileChooser.getSelectedFile().toPath()));
+            } catch (IOException ex) {}
+        
+            String filename = fileChooser.getSelectedFile().getPath();
+            System.out.println(filename);
+            String header = conteudo.substring(conteudo.indexOf("###")+3, conteudo.indexOf("$$$"));
+            System.out.println(header);
+            String conteudoArquivos = conteudo.substring(conteudo.indexOf("$$$")+3);
+            System.out.println(conteudoArquivos);
+            String metadado = header.split("###")[0];
+            System.out.println(metadado);
+            String dataCriacao = metadado.split("&&&")[2];
+            System.out.println(dataCriacao);
+            
+            String nome = file.getName();
+            String caminho = file.getAbsolutePath();
+            
+            DevMenu devmenu = new DevMenu(nome + ".dev", caminho, header, dataCriacao, conteudoArquivos.getBytes(), 0);
+            devmenu.setVisible(true);
+            //App app = new App(filename, header, conteudo, dataCriacao, conteudoArquivos.getBytes());
+            //app.setVisible(true);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -199,5 +218,6 @@ public class Inicio extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     // End of variables declaration//GEN-END:variables
 }
