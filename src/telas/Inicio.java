@@ -32,7 +32,8 @@ public class Inicio extends javax.swing.JFrame {
      * Creates new form Inicio
      */
     public Inicio() {
-        setLocationRelativeTo(null);
+        //Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        //this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
         initComponents();
     }
 
@@ -88,6 +89,7 @@ public class Inicio extends javax.swing.JFrame {
         jButton1.getAccessibleContext().setAccessibleDescription("");
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -158,23 +160,16 @@ public class Inicio extends javax.swing.JFrame {
             } catch (IOException ex) {}
         
             String filename = fileChooser.getSelectedFile().getPath();
-            System.out.println(filename);
             String header = conteudo.substring(conteudo.indexOf("###")+3, conteudo.indexOf("$$$"));
-            System.out.println(header);
             String conteudoArquivos = conteudo.substring(conteudo.indexOf("$$$")+3);
-            System.out.println(conteudoArquivos);
             String metadado = header.split("###")[0];
-            System.out.println(metadado);
             String dataCriacao = metadado.split("&&&")[2];
-            System.out.println(dataCriacao);
-            
             String nome = file.getName();
             String caminho = file.getAbsolutePath();
+            caminho = caminho.split(".dev")[0];
             
-            DevMenu devmenu = new DevMenu(nome + ".dev", caminho, header, dataCriacao, conteudoArquivos.getBytes(), 0);
+            DevMenu devmenu = new DevMenu(nome, caminho, header, dataCriacao, conteudoArquivos.getBytes(), 0);
             devmenu.setVisible(true);
-            //App app = new App(filename, header, conteudo, dataCriacao, conteudoArquivos.getBytes());
-            //app.setVisible(true);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
