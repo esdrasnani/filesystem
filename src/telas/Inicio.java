@@ -167,8 +167,8 @@ public class Inicio extends javax.swing.JFrame {
             String nome = file.getName();
             String caminho = file.getAbsolutePath();
             caminho = caminho.split(".dev")[0];
-            
-            DevMenu devmenu = new DevMenu(nome, caminho, header, dataCriacao, conteudoArquivos.getBytes(), 0);
+            String header_final = "###" + header;
+            DevMenu devmenu = new DevMenu(nome, caminho, header_final, dataCriacao, conteudoArquivos.getBytes(), 0);
             devmenu.setVisible(true);
         }
     }//GEN-LAST:event_jButton2ActionPerformed

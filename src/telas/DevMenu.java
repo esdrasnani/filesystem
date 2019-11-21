@@ -173,7 +173,11 @@ public class DevMenu extends javax.swing.JFrame {
                 fileChooser.setSelectedFile(new File(nome));
 
                 if(fileChooser.showSaveDialog(new JFrame()) == JFileChooser.APPROVE_OPTION) {
-
+                    
+                    List<String> list = Arrays.asList(header.split("###"));
+                    list = new ArrayList<String>(list);
+                    
+                    
                 }
             }
             else{
@@ -224,7 +228,6 @@ public class DevMenu extends javax.swing.JFrame {
             FileOutputStream dev = new FileOutputStream(caminho+".dev");            
             String newBytesHeader = header + "$$$" + new String(conteudo);
             dev.write(newBytesHeader.getBytes());
-            System.out.println(newBytesHeader);
             System.out.println("Arquivo Inserido com Sucesso");
             dev.close();
         }
@@ -243,6 +246,9 @@ public class DevMenu extends javax.swing.JFrame {
         if(model.getRoot() == null){
                  root = new DefaultMutableTreeNode("DEV");
         }
+        list.remove(0);
+        list.remove(0);
+        System.out.println(list);
         
         for(String s : list) {
            String [] arquivoPart = s.split("&&&");
