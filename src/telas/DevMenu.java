@@ -8,13 +8,19 @@ package telas;
 import java.awt.print.Book;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -177,7 +183,71 @@ public class DevMenu extends javax.swing.JFrame {
                     List<String> list = Arrays.asList(header.split("###"));
                     list = new ArrayList<String>(list);
                     
+                    list.remove(0);
+                    list.remove(0);
+                    int kk = 0;
                     
+                    
+                                       
+                    /*
+                        Parte 0: Nome arq + extensão
+                        Parte 1: Tipo (Arq ou Dir)
+                        Parte 2: Caminho Original do Arquivo
+                        Parte 3: Byte Inicial do Arquivo no .dev
+                        Parte 4: Total de Bytes do Arquivo
+                        Parte 5: Data e hora da Inserção do Arquivo no .dev
+                    */
+                    int bytes_total_ini = 0;
+                    int bytes_total_arq = 0;
+                    for(String s : list) {
+                        String [] arquivoPart = s.split("&&&");
+                        if (arquivoPart[0].equals(nomeExtrair)){
+                            System.out.println("Parte 0, Arquivo " + kk + ": " + arquivoPart[0]);
+                            System.out.println("Parte 1, Arquivo " + kk + ": " + arquivoPart[1]);
+                            System.out.println("Parte 2, Arquivo " + kk + ": " + arquivoPart[2]);
+                            bytes_total_ini = Integer.parseInt(arquivoPart[3]) + header.length();
+                            System.out.println("Parte 3, Arquivo " + kk + ": " + bytes_total_ini);
+                            bytes_total_arq = Integer.parseInt(arquivoPart[4]);
+                            System.out.println("Parte 4, Arquivo " + kk + ": " + bytes_total_arq);
+                            System.out.println("Parte 5, Arquivo " + kk + ": " + arquivoPart[5]);
+                            System.out.println("");
+                            System.out.println("");
+                        }
+                        kk++;
+                    }
+                    System.out.println(caminho+".dev");
+                    int total_read = bytes_total_arq;
+                    try{
+                        byte[] b = new byte[total_read];
+                        //InputStream is = new FileInputStream(caminho+".dev");
+                        RandomAccessFile is = new RandomAccessFile(caminho+".dev", "rw");
+
+                        FileOutputStream os = new FileOutputStream(fileChooser.getSelectedFile() + "." + extensao);
+
+                        int readBytes = 0;
+                        
+                        File f = new File("oi");
+                        
+                        is.seek(bytes_total_ini + 3);
+                        while ((readBytes  = is.read(b)) != -1) {
+                            os.write(b, 0, readBytes);
+                        }
+                        is.close();
+                        os.close();
+                    } catch(IOException ioe){
+                        System.out.println("Error "+ioe.getMessage());
+                    }
+                    
+                    /*
+                    byte[] b = new byte[total_read];
+                        
+                    for (long i = 0, len = conteudo.length / total_read; i < len; i++) {
+                    data.readFully(processBytes);
+                    // do something with the 128 bytes (processBytes).
+                    processBytes = ByteProcessor.process(processBytes)
+                    // add the processed bytes to the full bytes array
+                    System.arraycopy(processBytes, 0, fullBytes, processBytes.length, fullBytes.length);
+                    }*/
                 }
             }
             else{
@@ -248,7 +318,6 @@ public class DevMenu extends javax.swing.JFrame {
         }
         list.remove(0);
         list.remove(0);
-        System.out.println(list);
         
         for(String s : list) {
            String [] arquivoPart = s.split("&&&");
