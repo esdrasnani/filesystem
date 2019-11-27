@@ -237,17 +237,6 @@ public class DevMenu extends javax.swing.JFrame {
                     } catch(IOException ioe){
                         System.out.println("Error "+ioe.getMessage());
                     }
-                    
-                    /*
-                    byte[] b = new byte[total_read];
-                        
-                    for (long i = 0, len = conteudo.length / total_read; i < len; i++) {
-                    data.readFully(processBytes);
-                    // do something with the 128 bytes (processBytes).
-                    processBytes = ByteProcessor.process(processBytes)
-                    // add the processed bytes to the full bytes array
-                    System.arraycopy(processBytes, 0, fullBytes, processBytes.length, fullBytes.length);
-                    }*/
                 }
             }
             else{
