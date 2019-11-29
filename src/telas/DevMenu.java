@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -83,6 +84,7 @@ public class DevMenu extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTree1 = new javax.swing.JTree();
         jButton4 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -111,22 +113,30 @@ public class DevMenu extends javax.swing.JFrame {
             }
         });
 
+        jButton3.setText("jButton3");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 1, Short.MAX_VALUE)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(11, Short.MAX_VALUE)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 530, Short.MAX_VALUE)
                 .addGap(21, 21, 21))
         );
@@ -142,6 +152,8 @@ public class DevMenu extends javax.swing.JFrame {
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -168,10 +180,10 @@ public class DevMenu extends javax.swing.JFrame {
             if(model.getRoot() == null){
                  root = new DefaultMutableTreeNode("DEV");
             }
-            DefaultMutableTreeNode file_name = new DefaultMutableTreeNode(file.getName());
+            DefaultMutableTreeNode file_name = new DefaultMutableTreeNode(file.getName(), false);
             root.add(file_name);
             model.reload();
-            model.setRoot(root);
+//            model.setRoot(root);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -268,15 +280,42 @@ public class DevMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-
+        
         TreePath tp = jTree1.getSelectionPath();
-        MutableTreeNode insertNode = (MutableTreeNode) tp.getLastPathComponent();
-        System.out.println(insertNode.getParent());
-        MutableTreeNode parent = (MutableTreeNode) insertNode.getParent();       
-        System.out.println(parent.getIndex(insertNode));
+        System.out.println(tp.getParentPath());
+        System.out.println(tp.getPath());
+        System.out.println(tp.toString());
         
-        
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
+        DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
+        if(node.getAllowsChildren()){
+            String nomePasta = null;
+            do{
+                 nomePasta = JOptionPane.showInputDialog("Digite o nome da nova pasta:");
+            }
+            while(nomePasta == null || nomePasta == "");
+            DefaultMutableTreeNode folder_name = new DefaultMutableTreeNode(nomePasta);
+            node.add(folder_name);
+            model.reload();
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Não é possível criar pastas em arquivos!\n\nPor favor, selecione uma pasta.", "ATENÇÂO", JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
+        DefaultMutableTreeNode root = (DefaultMutableTreeNode) jTree1.getModel().getRoot(); 
+        DefaultMutableTreeNode file_name = new DefaultMutableTreeNode("Folder");
+        root.add(file_name);
+        model.reload();
+        model.setRoot(root);
+        root = file_name;
+        DefaultMutableTreeNode file = new DefaultMutableTreeNode("File");
+        root.add(file);
+        model.reload();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
     
     private byte[] readFileToByteArray(File file) {
         FileInputStream fis = null;
@@ -339,7 +378,7 @@ public class DevMenu extends javax.swing.JFrame {
         
         for(String s : list) {
            String [] arquivoPart = s.split("&&&");
-           DefaultMutableTreeNode file_name = new DefaultMutableTreeNode(arquivoPart[0]);
+           DefaultMutableTreeNode file_name = new DefaultMutableTreeNode(arquivoPart[0], false);
            root.add(file_name);
            model.reload();
            model.setRoot(root);
@@ -383,6 +422,7 @@ public class DevMenu extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTree jTree1;
