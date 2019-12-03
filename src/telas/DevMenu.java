@@ -23,14 +23,18 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.Position;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
@@ -50,14 +54,10 @@ public class DevMenu extends javax.swing.JFrame {
     public static String dataCriacao;
     
     
-    /*
-    public static String filename = "";
-    public static String header = "";
-    public static byte [] conteudoArquivos;
-    public static String arquivoComHash = "";
-    public static String dataCriacao = "";
-    public static List<Arquivo> arquivos;
-    */
+    ImageIcon leafIcon = createImageIcon("icon.png");
+    ImageIcon folderIcon = createImageIcon("folder.png");
+    ImageIcon closedFolderIcon = createImageIcon("closedfolder.png");
+    
     public DevMenu(String nome, String caminho, String header, String dataCriacao, byte[] conteudo, int novo) {
         this.nome = nome;
         this.caminho = caminho;
@@ -65,10 +65,36 @@ public class DevMenu extends javax.swing.JFrame {
         this.dataCriacao = dataCriacao;
         this.conteudo = conteudo;          
         initComponents();
+        
+        /*
+        if (leafIcon != null) {
+            DefaultTreeCellRenderer renderer = 
+                new DefaultTreeCellRenderer();
+            renderer.setLeafIcon(leafIcon);
+            renderer.setOpenIcon(folderIcon);
+            renderer.setClosedIcon(closedFolderIcon);
+            jTree1.setCellRenderer(renderer);
+        }*/
+        
+        TreeCellRenderer renderer = new telas.CustomTreeRenderer();
+        
+        jTree1.setCellRenderer(renderer);
+        
         if (novo == 0)
             montarArvore();
        
     }
+    
+    protected static ImageIcon createImageIcon(String path) {
+        java.net.URL imgURL = DevMenu.class.getResource(path);
+        if (imgURL != null) {
+            return new ImageIcon(imgURL);
+        } else {
+            System.err.println("Couldn't find file: " + path);
+            return null;
+        }
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -79,26 +105,25 @@ public class DevMenu extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnAddFile = new javax.swing.JButton();
+        btnExtractFile = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTree1 = new javax.swing.JTree();
-        jButton4 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnCreateDir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton1.setText("Add File");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnAddFile.setText("Add File");
+        btnAddFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnAddFileActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Extrair");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnExtractFile.setText("Extrair");
+        btnExtractFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnExtractFileActionPerformed(evt);
             }
         });
 
@@ -106,17 +131,10 @@ public class DevMenu extends javax.swing.JFrame {
         jTree1.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
         jScrollPane2.setViewportView(jTree1);
 
-        jButton4.setText("Criar Dir");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        btnCreateDir.setText("Criar Dir");
+        btnCreateDir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-
-        jButton3.setText("jButton3");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnCreateDirActionPerformed(evt);
             }
         });
 
@@ -129,13 +147,12 @@ public class DevMenu extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 1, Short.MAX_VALUE)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnCreateDir, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(btnAddFile, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnExtractFile, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 530, Short.MAX_VALUE)
                 .addGap(21, 21, 21))
@@ -147,13 +164,11 @@ public class DevMenu extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnAddFile, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnExtractFile, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnCreateDir, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -163,7 +178,7 @@ public class DevMenu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     private JTree jt;
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnAddFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddFileActionPerformed
         JFileChooser fileChooser = new JFileChooser();
         
         fileChooser.setDialogTitle("Selecione o local do Arquivo");
@@ -172,22 +187,23 @@ public class DevMenu extends javax.swing.JFrame {
        
         
         if(fileChooser.showSaveDialog(new JFrame()) == JFileChooser.APPROVE_OPTION) {
+            DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
+            DefaultMutableTreeNode root = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
+            TreePath tp = jTree1.getSelectionPath();
+
             File file = fileChooser.getSelectedFile();
             writebytes(file);
             
-            DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
-            DefaultMutableTreeNode root = (DefaultMutableTreeNode) jTree1.getModel().getRoot();
             if(model.getRoot() == null){
                  root = new DefaultMutableTreeNode("DEV");
             }
             DefaultMutableTreeNode file_name = new DefaultMutableTreeNode(file.getName(), false);
             root.add(file_name);
             model.reload();
-//            model.setRoot(root);
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnAddFileActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnExtractFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExtractFileActionPerformed
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
         if(node != null){
             if(node.isLeaf()){     
@@ -196,6 +212,8 @@ public class DevMenu extends javax.swing.JFrame {
                 for(TreePath path : paths){
                     nomeExtrair = path.getLastPathComponent().toString();
                 }
+                
+                
                 String extensao = nomeExtrair.substring(nomeExtrair.indexOf(".")+1);
                 String nome = nomeExtrair.substring(0, nomeExtrair.indexOf("."));
                 JFileChooser fileChooser = new JFileChooser();
@@ -226,6 +244,7 @@ public class DevMenu extends javax.swing.JFrame {
                         Parte 3: Byte Inicial do Arquivo no .dev
                         Parte 4: Total de Bytes do Arquivo
                         Parte 5: Data e hora da Inserção do Arquivo no .dev
+                        Parte 6: Localição na Árvore Interna Arquivo no .dev
                     */
                     int bytes_total_ini = 0;
                     int bytes_total_arq = 0;
@@ -277,44 +296,78 @@ public class DevMenu extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Por favor, selecione o arquivo a ser extraído!", "ATENÇÂO", JOptionPane.WARNING_MESSAGE);
         }
         
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnExtractFileActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void btnCreateDirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateDirActionPerformed
         
-        TreePath tp = jTree1.getSelectionPath();
-        System.out.println(tp.getParentPath());
-        System.out.println(tp.getPath());
-        System.out.println(tp.toString());
-        
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
-        DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
-        if(node.getAllowsChildren()){
-            String nomePasta = null;
-            do{
-                 nomePasta = JOptionPane.showInputDialog("Digite o nome da nova pasta:");
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
+            DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
+            if(node != null){
+                TreePath tp = jTree1.getSelectionPath();
+                System.out.println("Get Parent Path" + tp.getParentPath());
+                System.out.println("Get Path" + tp.getPath());
+                System.out.println("To String" + tp.toString());
+                String jTreeVarSelectedPath = "";
+                Object[] paths = jTree1.getSelectionPath().getPath();
+                for (int i=0; i<paths.length; i++) {
+                    jTreeVarSelectedPath += paths[i];
+                    if (i+1 <paths.length ) {
+                        jTreeVarSelectedPath += "/";
+                    }
+                }
+                
+                System.out.println(jTreeVarSelectedPath);
+                
+                
+                if(node.getAllowsChildren()){
+                    String nomePasta = null;
+                    do{
+                         nomePasta = JOptionPane.showInputDialog("Digite o nome da nova pasta:");
+                         System.out.println(nomePasta);
+                    }
+                    while(nomePasta.equals(""));
+                    
+                    if(nomePasta != null){
+                        
+                        try{
+
+                            SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+                            String data_criacao = fmt.format(new Date());
+
+                            int inicio = conteudo.length;
+
+                            header += "###" + nomePasta + "&&&2&&&" + "DIRETORIO"
+                                    + "&&&" + 0 + "&&&" + 0 + "&&&" + data_criacao + "&&&" + jTreeVarSelectedPath;
+                            
+                            /*header += "###" + file.getName() + "&&&1&&&" + file.getPath() 
+                                    + "&&&" + inicio + "&&&" + fileBytes.length + "&&&" + data_criacao + "&&&" + jTreeVarSelectedPath;*/
+
+                            FileOutputStream dev = new FileOutputStream(caminho+".dev");            
+                            String newBytesHeader = header + "$$$" + new String(conteudo);
+                            dev.write(newBytesHeader.getBytes());
+                            System.out.println("Pasta Adicionada com Sucesso");
+                            dev.close();
+                        }
+                        catch(Exception e){
+                            System.out.println("Exception" + e);
+                        }
+                        
+                        
+                        DefaultMutableTreeNode folder_name = new DefaultMutableTreeNode(nomePasta);
+                        node.add(folder_name);
+                        model.reload();
+                    }
+                }
+                else{
+                    JOptionPane.showMessageDialog(null, "Não é possível criar pastas em arquivos!\n\nPor favor, selecione uma pasta.", "ATENÇÂO", JOptionPane.WARNING_MESSAGE);
+                }
+            } 
+            else{
+                JOptionPane.showMessageDialog(null, "Selecione uma Pasta!", "ATENÇÂO", JOptionPane.WARNING_MESSAGE);
             }
-            while(nomePasta == null || nomePasta == "");
-            DefaultMutableTreeNode folder_name = new DefaultMutableTreeNode(nomePasta);
-            node.add(folder_name);
-            model.reload();
-        }
-        else{
-            JOptionPane.showMessageDialog(null, "Não é possível criar pastas em arquivos!\n\nPor favor, selecione uma pasta.", "ATENÇÂO", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
-        DefaultMutableTreeNode root = (DefaultMutableTreeNode) jTree1.getModel().getRoot(); 
-        DefaultMutableTreeNode file_name = new DefaultMutableTreeNode("Folder");
-        root.add(file_name);
-        model.reload();
-        model.setRoot(root);
-        root = file_name;
-        DefaultMutableTreeNode file = new DefaultMutableTreeNode("File");
-        root.add(file);
-        model.reload();
-    }//GEN-LAST:event_jButton3ActionPerformed
+       
+    }//GEN-LAST:event_btnCreateDirActionPerformed
 
     
     private byte[] readFileToByteArray(File file) {
@@ -341,10 +394,21 @@ public class DevMenu extends javax.swing.JFrame {
 
             String data_criacao = fmt.format(new Date());
             
+            
+            String jTreeVarSelectedPath = "";
+            Object[] pathhs = jTree1.getSelectionPath().getPath();
+            for (int i=0; i<pathhs.length; i++) {
+                jTreeVarSelectedPath += pathhs[i];
+                if (i+1 <pathhs.length ) {
+                    jTreeVarSelectedPath += "/";
+                }
+            }
+            System.out.println(jTreeVarSelectedPath);
+            
             int inicio = conteudo.length;
             
             header += "###" + file.getName() + "&&&1&&&" + file.getPath() 
-                   + "&&&" + inicio + "&&&" + fileBytes.length + "&&&" + data_criacao;
+                   + "&&&" + inicio + "&&&" + fileBytes.length + "&&&" + data_criacao + "&&&" + jTreeVarSelectedPath;
             
             
             byte[] newBytes = Arrays.copyOf(conteudo, conteudo.length + fileBytes.length);
@@ -376,14 +440,172 @@ public class DevMenu extends javax.swing.JFrame {
         list.remove(0);
         list.remove(0);
         
+        /*
         for(String s : list) {
            String [] arquivoPart = s.split("&&&");
-           DefaultMutableTreeNode file_name = new DefaultMutableTreeNode(arquivoPart[0], false);
-           root.add(file_name);
+           DefaultMutableTreeNode file_name;
+           
+           int num_folder = 1;
+           if(arquivoPart[1].equals("2")){
+               System.out.println("-----------------------");
+               System.out.println("Dir: " + arquivoPart[0]);
+               System.out.println(num_folder + "ª PASTA");
+               String [] path = arquivoPart[6].split("/");
+              
+               ArrayList<String> pathList = new ArrayList<String>(Arrays.asList(path));
+               pathList.add(arquivoPart[0]);
+               path = pathList.toArray(path);
+               
+               System.out.print("Path Original: ");
+               for (String path1 : path){
+                    System.out.print(path1+"/");
+               }
+               /*for (int i = 0; i < path.length / 2; i++) {
+                    String temp = path[i];
+                    path[i] = path[path.length - 1 - i];
+                    path[path.length - 1 - i] = temp;
+               }
+               System.out.println("");
+               
+               System.out.print("Path Invertido: ");
+               for (String path1 : path){
+                    System.out.print(path1+"/");
+               }
+               System.out.println("");
+               System.out.println("");
+               
+               DefaultMutableTreeNode as;
+               DefaultMutableTreeNode as_ant;
+               int count = 0;
+               String path_done = "";
+               for (String path1 : path) {
+                   System.out.print("Caminho Pasta Atual: ");
+                   System.out.print(path1 + "/");
+                   as = new DefaultMutableTreeNode(path1);
+                   System.out.println("");
+                   System.out.println("As: "+as);
+                   System.out.println("GetRoot: " + jTree1.getModel().getRoot());
+                   if(path.length != 1){
+                        if (!path1.equals("DEV")){
+                            as_ant = new DefaultMutableTreeNode(path[count-1]);
+                            if(!path[count-1].equals("DEV")){
+                                if(findText(path_done)){
+                                    as_ant.add(as);
+                                    root.add(as_ant);
+                                }
+                            }
+                            else{
+                                root.add(as);
+                            }
+                       }
+                   }
+                   else{
+                       as = new DefaultMutableTreeNode(arquivoPart[0]);
+                       root.add(as);
+                   }
+                   
+                   path_done += path1 + "/";
+                   count++;
+                   System.out.println("");
+                   
+               }
+           }
+           num_folder++;
+           
            model.reload();
-           model.setRoot(root);
+        }*/
+        
+        for(String s : list) {
+           String [] arquivoPart = s.split("&&&");
+           DefaultMutableTreeNode file_name;
+           
+           int num_folder = 1;
+           if(arquivoPart[1].equals("1")){
+               System.out.println("-----------------------");
+               System.out.println("Dir: " + arquivoPart[0]);
+               System.out.println(num_folder + "ª PASTA");
+               String [] path = arquivoPart[6].split("/");
+              
+               ArrayList<String> pathList = new ArrayList<String>(Arrays.asList(path));
+               pathList.add(arquivoPart[0]);
+               path = pathList.toArray(path);
+               
+               System.out.print("Path Original: ");
+               for (String path1 : path){
+                    System.out.print(path1+"/");
+               }
+               /*for (int i = 0; i < path.length / 2; i++) {
+                    String temp = path[i];
+                    path[i] = path[path.length - 1 - i];
+                    path[path.length - 1 - i] = temp;
+               }
+               System.out.println("");
+               
+               System.out.print("Path Invertido: ");
+               for (String path1 : path){
+                    System.out.print(path1+"/");
+               }*/
+               System.out.println("");
+               System.out.println("");
+               
+               DefaultMutableTreeNode as;
+               DefaultMutableTreeNode as_ant;
+               int count = 0;
+               String path_done = "";
+               for (String path1 : path) {
+                   System.out.print("Caminho Pasta Atual: ");
+                   System.out.print(path1 + "/");
+                   as = new DefaultMutableTreeNode(path1, false);
+                   System.out.println("");
+                   System.out.println("As: "+as);
+                   System.out.println("GetRoot: " + jTree1.getModel().getRoot());
+                   if(path.length != 1){
+                        if (!path1.equals("DEV")){
+                            as_ant = new DefaultMutableTreeNode(path[count-1]);
+                            if(!path[count-1].equals("DEV")){
+                                if(findText(path_done)){
+                                    as_ant.add(as);
+                                    //root.add(as_ant);
+                                }
+                            }
+                            else{
+                                root.add(as);
+                            }
+                       }
+                   }
+                   else{
+                       as = new DefaultMutableTreeNode(arquivoPart[0]);
+                       root.add(as);
+                   }
+                   
+                   path_done += path1 + "/";
+                   count++;
+                   System.out.println("");
+                   
+               }
+           }
+           num_folder++;
+           
+           model.reload();
         }
+        
     }
+    public boolean findText(String nodes) {
+        String[] parts = nodes.split("/");
+        TreePath path = null;
+        for (String part : parts) {
+            int row = (path==null ? 0 : jTree1.getRowForPath(path));
+            path = jTree1.getNextMatch(part, row, Position.Bias.Forward);
+            if (path==null) {
+                return false;
+            }
+        }
+        jTree1.scrollPathToVisible(path);
+        jTree1.setSelectionPath(path);
+
+        return path!=null;
+    }
+     
     /**
      * @param args the command line arguments
      */
@@ -420,10 +642,9 @@ public class DevMenu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JButton btnAddFile;
+    private javax.swing.JButton btnCreateDir;
+    private javax.swing.JButton btnExtractFile;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTree jTree1;
     // End of variables declaration//GEN-END:variables
