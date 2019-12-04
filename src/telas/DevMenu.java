@@ -66,7 +66,7 @@ public class DevMenu extends javax.swing.JFrame {
 
     ImageIcon leafIcon = createImageIcon("icon.png");
     ImageIcon folderIcon = createImageIcon("folder.png");
-    ImageIcon closedFolderIcon = createImageIcon("closedfolder.png");
+    ImageIcon closedFolderIcon = createImageIcon("closedFolder.png");
 
     public DevMenu(String nome, String caminho, String header, String dataCriacao, byte[] conteudo, int novo) {
         this.nome = nome;
