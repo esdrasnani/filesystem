@@ -5,6 +5,8 @@
  */
 package telas;
 
+import com.sun.javafx.scene.control.skin.VirtualFlow;
+import com.sun.xml.internal.ws.util.StringUtils;
 import java.awt.print.Book;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,6 +24,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -37,6 +40,7 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import java.lang.Object;
 
 /**
  *
@@ -162,14 +166,14 @@ public class DevMenu extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnAddFile, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnExtractFile, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnCreateDir, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 194, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -435,161 +439,122 @@ public class DevMenu extends javax.swing.JFrame {
         DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) jTree1.getModel().getRoot(); 
         if(model.getRoot() == null){
-                 root = new DefaultMutableTreeNode("DEV");
+               root = new DefaultMutableTreeNode("DEV");
         }
         list.remove(0);
         list.remove(0);
         
-        /*
+        List<List> paths = new ArrayList<>();
         for(String s : list) {
-           String [] arquivoPart = s.split("&&&");
-           DefaultMutableTreeNode file_name;
-           
-           int num_folder = 1;
-           if(arquivoPart[1].equals("2")){
-               System.out.println("-----------------------");
-               System.out.println("Dir: " + arquivoPart[0]);
-               System.out.println(num_folder + "ª PASTA");
-               String [] path = arquivoPart[6].split("/");
-              
-               ArrayList<String> pathList = new ArrayList<String>(Arrays.asList(path));
-               pathList.add(arquivoPart[0]);
-               path = pathList.toArray(path);
-               
-               System.out.print("Path Original: ");
-               for (String path1 : path){
-                    System.out.print(path1+"/");
-               }
-               /*for (int i = 0; i < path.length / 2; i++) {
-                    String temp = path[i];
-                    path[i] = path[path.length - 1 - i];
-                    path[path.length - 1 - i] = temp;
-               }
-               System.out.println("");
-               
-               System.out.print("Path Invertido: ");
-               for (String path1 : path){
-                    System.out.print(path1+"/");
-               }
-               System.out.println("");
-               System.out.println("");
-               
-               DefaultMutableTreeNode as;
-               DefaultMutableTreeNode as_ant;
-               int count = 0;
-               String path_done = "";
-               for (String path1 : path) {
-                   System.out.print("Caminho Pasta Atual: ");
-                   System.out.print(path1 + "/");
-                   as = new DefaultMutableTreeNode(path1);
-                   System.out.println("");
-                   System.out.println("As: "+as);
-                   System.out.println("GetRoot: " + jTree1.getModel().getRoot());
-                   if(path.length != 1){
-                        if (!path1.equals("DEV")){
-                            as_ant = new DefaultMutableTreeNode(path[count-1]);
-                            if(!path[count-1].equals("DEV")){
-                                if(findText(path_done)){
-                                    as_ant.add(as);
-                                    root.add(as_ant);
-                                }
-                            }
-                            else{
-                                root.add(as);
-                            }
-                       }
-                   }
-                   else{
-                       as = new DefaultMutableTreeNode(arquivoPart[0]);
-                       root.add(as);
-                   }
-                   
-                   path_done += path1 + "/";
-                   count++;
-                   System.out.println("");
-                   
-               }
-           }
-           num_folder++;
-           
-           model.reload();
-        }*/
-        
-        for(String s : list) {
-           String [] arquivoPart = s.split("&&&");
-           DefaultMutableTreeNode file_name;
-           
-           int num_folder = 1;
-           if(arquivoPart[1].equals("1")){
-               System.out.println("-----------------------");
-               System.out.println("Dir: " + arquivoPart[0]);
-               System.out.println(num_folder + "ª PASTA");
-               String [] path = arquivoPart[6].split("/");
-              
-               ArrayList<String> pathList = new ArrayList<String>(Arrays.asList(path));
-               pathList.add(arquivoPart[0]);
-               path = pathList.toArray(path);
-               
-               System.out.print("Path Original: ");
-               for (String path1 : path){
-                    System.out.print(path1+"/");
-               }
-               /*for (int i = 0; i < path.length / 2; i++) {
-                    String temp = path[i];
-                    path[i] = path[path.length - 1 - i];
-                    path[path.length - 1 - i] = temp;
-               }
-               System.out.println("");
-               
-               System.out.print("Path Invertido: ");
-               for (String path1 : path){
-                    System.out.print(path1+"/");
-               }*/
-               System.out.println("");
-               System.out.println("");
-               
-               DefaultMutableTreeNode as;
-               DefaultMutableTreeNode as_ant;
-               int count = 0;
-               String path_done = "";
-               for (String path1 : path) {
-                   System.out.print("Caminho Pasta Atual: ");
-                   System.out.print(path1 + "/");
-                   as = new DefaultMutableTreeNode(path1, false);
-                   System.out.println("");
-                   System.out.println("As: "+as);
-                   System.out.println("GetRoot: " + jTree1.getModel().getRoot());
-                   if(path.length != 1){
-                        if (!path1.equals("DEV")){
-                            as_ant = new DefaultMutableTreeNode(path[count-1]);
-                            if(!path[count-1].equals("DEV")){
-                                if(findText(path_done)){
-                                    as_ant.add(as);
-                                    //root.add(as_ant);
-                                }
-                            }
-                            else{
-                                root.add(as);
-                            }
-                       }
-                   }
-                   else{
-                       as = new DefaultMutableTreeNode(arquivoPart[0]);
-                       root.add(as);
-                   }
-                   
-                   path_done += path1 + "/";
-                   count++;
-                   System.out.println("");
-                   
-               }
-           }
-           num_folder++;
-           
-           model.reload();
+            String [] arquivoPart = s.split("&&&");
+            String [] dirPart = arquivoPart[6].split("/");
+            
+            System.out.println("File: " + arquivoPart[0]);
+            for(String path : dirPart){
+                System.out.print(path + " ");
+            }
+            String[] test = arquivoPart[6].split("\\s*/\\s*");
+            String[] tesst = new String[test.length];
+            int i;
+            int l = 1;
+            System.out.println("");
+            if(test.length == 1){
+                tesst[0] = arquivoPart[0];
+                System.out.println("Tesst: " + tesst[0]);
+            }
+            else{
+                for(i = 0; l < test.length; i++){
+                    System.out.println("Tamanho Test: " + test.length);
+                    System.out.println("Tamanho Tesst: " + tesst.length);
+                    tesst[i] = test[l];
+                    l++;
+                }
+            
+                System.out.println("Tesst: " + tesst[0]);
+                tesst[i] = arquivoPart[0];
+            }
+            List<String> items = Arrays.asList(tesst);
+            System.out.println("Items: " + items);
+            paths.add(items);
+            System.out.println("");
+            System.out.println("");
+            
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode(arquivoPart[0]);
         }
+        
+         for (int j = 0; j < paths.size(); j++) {
+             List<String> atual = new ArrayList<String>();
+             atual = paths.get(j);
+             System.out.println("Atual: " + atual);
+             String result = atual.stream()
+                            .map(n -> String.valueOf(n))
+                            .collect(Collectors.joining("/"));
+             System.out.println("Result: " + result);
+             buildTreeFromString(model, result);
+             
+         }
+        System.out.println(paths);
+        model.reload();
         
     }
+     
+    private void buildTreeFromString(final DefaultTreeModel model, final String str) {
+        // Fetch the root node
+        DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+
+        // Split the string around the delimiter
+        String [] strings = str.split("/");
+
+        // Create a node object to use for traversing down the tree as it 
+        // is being created
+        DefaultMutableTreeNode node = root;
+
+        // Iterate of the string array
+        for (String s: strings) {
+            // Look for the index of a node at the current level that
+            // has a value equal to the current string
+            int index = childIndex(node, s);
+
+            // Index less than 0, this is a new node not currently present on the tree
+            if (index < 0) {
+                // Add the new node
+                DefaultMutableTreeNode newChild;
+                if(s.contains(".")){
+                    newChild = new DefaultMutableTreeNode(s, false);
+                    
+                }
+                else{
+                    newChild = new DefaultMutableTreeNode(s, true);
+                }
+                node.insert(newChild, node.getChildCount());
+                node = newChild;
+                
+            }
+            // Else, existing node, skip to the next string
+            else {
+                node = (DefaultMutableTreeNode) node.getChildAt(index);
+            }
+        }
+    }
+     
+    
+    private int childIndex(final DefaultMutableTreeNode node, final String childValue) {
+        Enumeration<DefaultMutableTreeNode> children = node.children();
+        DefaultMutableTreeNode child = null;
+        int index = -1;
+
+        while (children.hasMoreElements() && index < 0) {
+            child = children.nextElement();
+
+            if (child.getUserObject() != null && childValue.equals(child.getUserObject())) {
+                index = node.getIndex(child);
+            }
+        }
+
+        return index;
+    }
+     
+     
     public boolean findText(String nodes) {
         String[] parts = nodes.split("/");
         TreePath path = null;
@@ -602,7 +567,7 @@ public class DevMenu extends javax.swing.JFrame {
         }
         jTree1.scrollPathToVisible(path);
         jTree1.setSelectionPath(path);
-
+        System.out.println(path);
         return path!=null;
     }
      
