@@ -5,6 +5,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
 import javax.swing.ImageIcon;
+import javax.swing.plaf.TreeUI;
+import javax.swing.plaf.basic.BasicTreeUI;
 import telas.DevMenu;
 
 public class CustomTreeRenderer extends DefaultTreeCellRenderer {
@@ -22,15 +24,25 @@ public class CustomTreeRenderer extends DefaultTreeCellRenderer {
 
             ImageIcon leafIcon = createImageIcon("icon.png");
             ImageIcon folderIcon = createImageIcon("folder.png");
-            ImageIcon closedFolderIcon = createImageIcon("closedfolder.png");
+            ImageIcon closedFolderIcon = createImageIcon("closedFolder.png");
+            ImageIcon plusIcon = createImageIcon("plus.png");
+            ImageIcon minusIcon = createImageIcon("minus.png");
 
-            if(node.isLeaf()){
+            if(node.getAllowsChildren()){
+                this.setOpenIcon(folderIcon);
+                this.setClosedIcon(closedFolderIcon);
+            }
+            else{
                 this.setIcon(leafIcon);
             }
-            if(node.getAllowsChildren()){
-                this.setIcon(folderIcon);
-            }
+            
+            TreeUI tui = tree.getUI();
+            if (tui instanceof BasicTreeUI) {
+              ((BasicTreeUI)tui).setCollapsedIcon(plusIcon);
+              ((BasicTreeUI)tui).setExpandedIcon(minusIcon);
+            }            
         }
+        
         return this;
     }
     

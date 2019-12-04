@@ -5,6 +5,7 @@
  */
 package telas;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
@@ -35,6 +36,7 @@ public class Inicio extends javax.swing.JFrame {
         //Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         //this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
         initComponents();
+
     }
 
     /**
@@ -50,6 +52,11 @@ public class Inicio extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("DEV File System");
+        setBackground(new java.awt.Color(0, 102, 255));
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
+        setForeground(new java.awt.Color(51, 102, 255));
 
         jButton1.setText("Novo Arquivo");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -72,8 +79,8 @@ public class Inicio extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(59, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(48, 48, 48))
         );
         layout.setVerticalGroup(
@@ -81,9 +88,9 @@ public class Inicio extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(26, 26, 26)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addGap(27, 27, 27)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         jButton1.getAccessibleContext().setAccessibleDescription("");
@@ -184,11 +191,11 @@ public class Inicio extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-               /* if ("Nimbus".equals(info.getName())) {
+                /*if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
-                }
-                */
+                }*/
+                
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             }
         } catch (ClassNotFoundException ex) {
