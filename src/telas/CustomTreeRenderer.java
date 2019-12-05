@@ -19,7 +19,6 @@ public class CustomTreeRenderer extends DefaultTreeCellRenderer {
                                                   boolean leaf, int row, boolean hasFocus) {
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
         
-        if(value != null){
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
 
             ImageIcon leafIcon = createImageIcon("icon.png");
@@ -29,19 +28,20 @@ public class CustomTreeRenderer extends DefaultTreeCellRenderer {
             ImageIcon minusIcon = createImageIcon("minus.png");
 
             if(node.getAllowsChildren()){
-                this.setOpenIcon(folderIcon);
-                this.setClosedIcon(closedFolderIcon);
+                this.setIcon(closedFolderIcon);
             }
             else{
                 this.setIcon(leafIcon);
             }
+            
+            this.setOpenIcon(folderIcon);
+                this.setClosedIcon(closedFolderIcon);
             
             TreeUI tui = tree.getUI();
             if (tui instanceof BasicTreeUI) {
               ((BasicTreeUI)tui).setCollapsedIcon(plusIcon);
               ((BasicTreeUI)tui).setExpandedIcon(minusIcon);
             }            
-        }
         
         return this;
     }

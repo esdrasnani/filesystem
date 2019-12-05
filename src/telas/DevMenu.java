@@ -5,9 +5,9 @@
  */
 package telas;
 
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -46,6 +46,10 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.lang.Object;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import javax.swing.Icon;
 import javax.swing.UIManager;
 
@@ -111,6 +115,7 @@ public class DevMenu extends javax.swing.JFrame {
         jTree1 = new javax.swing.JTree();
         btnCreateDir = new javax.swing.JButton();
         excludeNode = new javax.swing.JButton();
+        openFile = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("DEV File System");
@@ -148,20 +153,30 @@ public class DevMenu extends javax.swing.JFrame {
             }
         });
 
+        openFile.setText("Abrir Arquivo");
+        openFile.setMaximumSize(new java.awt.Dimension(61, 32));
+        openFile.setMinimumSize(new java.awt.Dimension(61, 32));
+        openFile.setPreferredSize(new java.awt.Dimension(61, 34));
+        openFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openFileActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(excludeNode, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnAddFile, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE))
-                    .addComponent(btnCreateDir, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnExtractFile, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 531, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnAddFile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnCreateDir, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
+                    .addComponent(btnExtractFile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(excludeNode, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(openFile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
                 .addGap(21, 21, 21))
         );
         layout.setVerticalGroup(
@@ -176,9 +191,11 @@ public class DevMenu extends javax.swing.JFrame {
                         .addComponent(btnCreateDir, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnExtractFile, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(11, 11, 11)
+                        .addGap(18, 18, 18)
                         .addComponent(excludeNode, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 123, Short.MAX_VALUE)))
+                        .addGap(18, 18, 18)
+                        .addComponent(openFile, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -190,31 +207,37 @@ public class DevMenu extends javax.swing.JFrame {
     private void btnAddFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddFileActionPerformed
 
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
+        if (node != null) {
+            if (node.getAllowsChildren()) {
+                JFileChooser fileChooser = new JFileChooser();
 
-        if (node.getAllowsChildren()) {
-            JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setDialogTitle("Selecione o Arquivo");
+                fileChooser.setAcceptAllFileFilterUsed(true);
 
-            fileChooser.setDialogTitle("Selecione o local do Arquivo");
+                if (fileChooser.showSaveDialog(new JFrame()) == JFileChooser.APPROVE_OPTION) {
+                    DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
+                    DefaultMutableTreeNode root = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
+                    TreePath tp = jTree1.getSelectionPath();
 
-            fileChooser.setAcceptAllFileFilterUsed(true);
+                    File file = fileChooser.getSelectedFile();
+                    if (Files.exists(Paths.get(file.getAbsolutePath()))) {
+                        writebytes(file);
 
-            if (fileChooser.showSaveDialog(new JFrame()) == JFileChooser.APPROVE_OPTION) {
-                DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
-                DefaultMutableTreeNode root = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
-                TreePath tp = jTree1.getSelectionPath();
-
-                File file = fileChooser.getSelectedFile();
-                writebytes(file);
-
-                if (model.getRoot() == null) {
-                    root = new DefaultMutableTreeNode("DEV");
+                        if (model.getRoot() == null) {
+                            root = new DefaultMutableTreeNode("DEV");
+                        }
+                        DefaultMutableTreeNode file_name = new DefaultMutableTreeNode(file.getName(), false);
+                        root.add(file_name);
+                        model.reload();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Arquivo Inexistente\n\nPor favor, tente novamente.", "ATENÇÂO", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
-                DefaultMutableTreeNode file_name = new DefaultMutableTreeNode(file.getName(), false);
-                root.add(file_name);
-                model.reload();
+            } else {
+                JOptionPane.showMessageDialog(null, "Não é adicionar arquivos em arquivos!\n\nPor favor, selecionar uma pasta.", "ATENÇÂO", JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Não é adicionar arquivos em arquivos!\n\nPor favor, selecionar uma pasta.", "ATENÇÂO", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Por favor, selecionar uma pasta para adicionar arquivos.", "ATENÇÂO", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAddFileActionPerformed
 
@@ -262,6 +285,14 @@ public class DevMenu extends javax.swing.JFrame {
                     for (String s : list) {
                         String[] arquivoPart = s.split("&&&");
                         if (arquivoPart[0].equals(nomeExtrair)) {
+                            System.out.println("0: " + arquivoPart[0]);
+                            System.out.println("1: " + arquivoPart[1]);
+                            System.out.println("2: " + arquivoPart[2]);
+                            System.out.println("3: " + arquivoPart[3]);
+                            System.out.println("4: " + arquivoPart[4]);
+                            System.out.println("5: " + arquivoPart[5]);
+                            System.out.println("6: " + arquivoPart[6]);
+                            
                             bytes_total_ini = Integer.parseInt(arquivoPart[3]) + header.length();
                             bytes_total_arq = Integer.parseInt(arquivoPart[4]);
                         }
@@ -332,13 +363,17 @@ public class DevMenu extends javax.swing.JFrame {
                         String data_criacao = fmt.format(new Date());
 
                         int inicio = conteudo.length;
+                        
+                        header = header.replace("$$$", "");
 
                         header += "###" + nomePasta + "&&&2&&&" + "DIRETORIO"
-                                + "&&&" + 0 + "&&&" + 0 + "&&&" + data_criacao + "&&&" + jTreeVarSelectedPath;
+                                + "&&&" + 0 + "&&&" + 0 + "&&&" + data_criacao + "&&&" + jTreeVarSelectedPath + "$$$";
 
                         FileOutputStream dev = new FileOutputStream(caminho + ".dev");
-                        String newBytesHeader = header + "$$$" + new String(conteudo);
-                        dev.write(newBytesHeader.getBytes());
+                        dev.write(header.getBytes());
+                        dev.close();
+                        dev = new FileOutputStream(caminho + ".dev", true);
+                        dev.write(conteudo);
                         dev.close();
                     } catch (Exception e) {
                         System.out.println("Exception" + e);
@@ -359,9 +394,11 @@ public class DevMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCreateDirActionPerformed
 
     private void excludeNodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_excludeNodeActionPerformed
-        
-            DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
 
+        DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
+
+        if (node.isLeaf()) {
             TreePath[] paths = jTree1.getSelectionPaths();
             if (paths != null) {
 
@@ -391,34 +428,122 @@ public class DevMenu extends javax.swing.JFrame {
                 }
                 int total_read = bytes_total_arq;
 
-
                 ByteBuffer buffer = ByteBuffer.wrap(conteudo);
-                
 
                 byte[] newArray = new byte[total_read];
                 buffer.position(bytes_total_ini);
                 buffer.put(newArray);
-                
-                header = header.replace("###" + header_arq, "");
-                try{
-                FileOutputStream dev = new FileOutputStream(caminho + ".dev");
-                String newBytesHeader = header + "$$$" + new String(conteudo);
-                dev.write(newBytesHeader.getBytes());
-                dev.close();
 
-                for (TreePath path : paths) {
-                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
-                    if (node.getParent() != null) {
-                        model.removeNodeFromParent(node);
+                header = header.replace("###" + header_arq, "");
+                try {
+                    FileOutputStream dev = new FileOutputStream(caminho + ".dev");
+                    String newBytesHeader = header + "$$$" + new String(conteudo);
+                    dev.write(header.getBytes());
+                    dev.close();
+                    dev = new FileOutputStream(caminho + ".dev", true);
+                    dev.write(conteudo);
+                    dev.close();
+
+                    for (TreePath path : paths) {
+                        node = (DefaultMutableTreeNode) path.getLastPathComponent();
+                        if (node.getParent() != null) {
+                            model.removeNodeFromParent(node);
+                        }
                     }
+                } catch (Exception e) {
+                    System.out.println(e);
                 }
             }
-                catch(Exception e){
-            System.out.println(e);
         }
+        else{
+            JOptionPane.showMessageDialog(null, "Não é Possível Excluir a Pasta!\n\nPasta Possui Arquivos.", "ATENÇÂO", JOptionPane.ERROR_MESSAGE);
         }
-        
+
     }//GEN-LAST:event_excludeNodeActionPerformed
+
+    private void openFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileActionPerformed
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
+        
+        if(node != null){
+            if(!node.getAllowsChildren()){
+                TreePath[] paths = jTree1.getSelectionPaths();
+                String nomeExtrair = "";
+                for (TreePath path : paths) {
+                    nomeExtrair = path.getLastPathComponent().toString();
+                }
+
+                String extensao = nomeExtrair.substring(nomeExtrair.indexOf(".") + 1);
+                String nome = nomeExtrair.substring(0, nomeExtrair.indexOf("."));
+                List<String> list = Arrays.asList(header.split("###"));
+                    list = new ArrayList<String>(list);
+
+                    list.remove(0);
+                    list.remove(0);
+                    int kk = 0;
+                    /*
+                        Parte 0: Nome arq + extensão
+                        Parte 1: Tipo (Arq ou Dir)
+                        Parte 2: Caminho Original do Arquivo
+                        Parte 3: Byte Inicial do Arquivo no .dev
+                        Parte 4: Total de Bytes do Arquivo
+                        Parte 5: Data e hora da Inserção do Arquivo no .dev
+                        Parte 6: Localição na Árvore Interna Arquivo no .dev
+                     */
+                    int bytes_total_ini = 0;
+                    int bytes_total_arq = 0;
+                    for (String s : list) {
+                        String[] arquivoPart = s.split("&&&");
+                        if (arquivoPart[0].equals(nomeExtrair)) {
+                            bytes_total_ini = Integer.parseInt(arquivoPart[3]) + header.length();
+                            bytes_total_arq = Integer.parseInt(arquivoPart[4]);
+                        }
+                        kk++;
+                    }
+                    int total_read = bytes_total_arq;
+                    try {
+                        byte[] b = new byte[total_read];
+                        //InputStream is = new FileInputStream(caminho+".dev");
+                        RandomAccessFile is = new RandomAccessFile(caminho + ".dev", "rw");
+                        
+                        System.out.println();
+                        File outFile = new File(System.getProperty("user.home") + "/temp/");
+                        outFile.mkdirs();
+                        
+                        FileOutputStream os = new FileOutputStream(System.getProperty("user.home") + "/temp/" + nomeExtrair);
+                        System.out.println("Passou");
+                        
+
+                        int readBytes = 0;
+
+                        File f = new File("oi");
+
+                        is.seek(bytes_total_ini + 3);
+                        while ((readBytes = is.read(b)) != -1) {
+                            os.write(b, 0, readBytes);
+                        }
+                        is.close();
+                        os.close();
+                        
+                        
+                        File file = new File("/home/esdras/temp/" + nomeExtrair);
+                        System.out.println("Aqui Passou");
+                        //first check if Desktop is supported by Platform or not
+                        if(!Desktop.isDesktopSupported()){
+                            System.out.println("Desktop is not supported");
+                            return;
+                        }
+                           
+                        
+
+                        Desktop desktop = Desktop.getDesktop();
+                        if(file.exists()) desktop.open(file);
+                        
+                    } catch (IOException ioe) {
+                        System.out.println("Error " + ioe.getMessage());
+                    }
+            }
+        }
+    }//GEN-LAST:event_openFileActionPerformed
 
     private byte[] readFileToByteArray(File file) {
         FileInputStream fis = null;
@@ -452,22 +577,30 @@ public class DevMenu extends javax.swing.JFrame {
                     jTreeVarSelectedPath += "/";
                 }
             }
-            System.out.println(jTreeVarSelectedPath);
+            
+            System.out.println(fileBytes.length);
 
             int inicio = conteudo.length;
+            
+            header = header.replace("$$$", "");
 
             header += "###" + file.getName() + "&&&1&&&" + file.getPath()
-                    + "&&&" + inicio + "&&&" + fileBytes.length + "&&&" + data_criacao + "&&&" + jTreeVarSelectedPath;
+                    + "&&&" + inicio + "&&&" + fileBytes.length + "&&&" + data_criacao + "&&&" + jTreeVarSelectedPath + "$$$";
 
             byte[] newBytes = Arrays.copyOf(conteudo, conteudo.length + fileBytes.length);
             System.arraycopy(fileBytes, 0, newBytes, conteudo.length, fileBytes.length);
-
             conteudo = newBytes;
 
             FileOutputStream dev = new FileOutputStream(caminho + ".dev");
-            String newBytesHeader = header + "$$$" + new String(conteudo);
-            dev.write(newBytesHeader.getBytes());
+            dev.write(header.getBytes());
             dev.close();
+            dev = new FileOutputStream(caminho + ".dev", true);
+            dev.write(conteudo);
+            dev.close();
+            //try{
+            //    Files.write(Paths.get(caminho + ".dev"), conteudo, StandardOpenOption.APPEND);
+            //}
+            //catch(IOException e){}
         } catch (Exception e) {
             System.out.println("Exception" + e);
         }
@@ -611,6 +744,7 @@ public class DevMenu extends javax.swing.JFrame {
     private javax.swing.JButton excludeNode;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTree jTree1;
+    private javax.swing.JButton openFile;
     // End of variables declaration//GEN-END:variables
 
 }
